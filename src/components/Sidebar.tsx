@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 import { useSidebar } from "@/hooks/useSidebar";
@@ -38,6 +38,7 @@ import {
   Moon,
   ChevronLeft,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 
 // Navigation items for regular users
@@ -154,6 +155,19 @@ export function Sidebar() {
             {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             {!isCollapsed && <span>Theme</span>}
           </Button>
+
+          {/* Tombol Logout, hanya tampil jika sudah login */}
+          {isLoggedIn && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => signOut()}
+              className={cn("gap-2", isCollapsed && "justify-center px-2")}
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </Button>
+          )}
         </div>
         
         {!isCollapsed && (
