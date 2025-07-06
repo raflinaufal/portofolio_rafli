@@ -64,3 +64,13 @@ model Message {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
+
+model HomeContent {
+  id          Int      @id @default(autoincrement())
+  name        String   // Nama admin/owner
+  title       String   // Judul utama (misal: Hi, I'm ...)
+  location    String   // Lokasi (misal: Based in ...)
+  isRemote    Boolean  // Status remote worker
+  description String   // Deskripsi singkat
+  updatedAt   DateTime @updatedAt
+}
