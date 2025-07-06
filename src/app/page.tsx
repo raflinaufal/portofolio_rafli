@@ -1,108 +1,51 @@
+"use client";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHomeContent } from "@/lib/slices/homeContentSlice";
+import { RootState } from "@/lib/store";
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { prisma } from '@/lib/prisma'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+import { Coffee } from 'lucide-react'
 
-async function getHomeContent() {
-  try {
-    const content = await prisma.homeContent.findFirst()
-    return content
-  } catch (error) {
-    console.error('Error fetching home content:', error)
-    return null
-  }
-}
+const TypedText = dynamic(() => import('@/components/TypedText'), { ssr: false })
 
-export default async function HomePage() {
-  const content = await getHomeContent()
+export default function HomePage() {
+  const dispatch = useDispatch();
+  const { data, loading, error } = useSelector((state: RootState) => state.homeContent);
+
+  useEffect(() => {
+    dispatch(fetchHomeContent() as any);
+  }, [dispatch]);
+
+  const content = data[0];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            {content?.title || 'Welcome to My Portfolio'}
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8">
-            {content?.subtitle || 'Full-Stack Developer & Creative Problem Solver'}
-          </p>
-          <p className="text-lg text-gray-500 mb-8 max-w-3xl mx-auto">
-            {content?.description || 'I create beautiful, functional, and user-centered digital experiences. With a passion for clean code and innovative solutions, I bring ideas to life through modern web technologies.'}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/projects">
-              <Button size="lg" className="text-lg px-8 py-3">
-                {content?.ctaText || 'View My Work'}
-              </Button>
-            </Link>
-            <Link href="/contact">
-              <Button variant="outline" size="lg" className="text-lg px-8 py-3">
-                Get In Touch
-              </Button>
-            </Link>
+        <div className="relative text-center mb-16">
+          {/* Icon pojok kanan atas */}
+          <div className="absolute right-0 top-0 mr-2 mt-2 text-2xl text-muted-foreground">
+            <Coffee />
           </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <Card>
-            <CardHeader>
-              <CardTitle>Web Development</CardTitle>
-              <CardDescription>
-                Modern, responsive websites built with the latest technologies
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">
-                From simple landing pages to complex web applications, I create solutions that work seamlessly across all devices.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Mobile Development</CardTitle>
-              <CardDescription>
-                Cross-platform mobile apps that deliver exceptional user experiences
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">
-                Building native and hybrid mobile applications that users love to interact with.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>UI/UX Design</CardTitle>
-              <CardDescription>
-                User-centered design that combines aesthetics with functionality
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-600">
-                Creating intuitive interfaces that enhance user experience and drive engagement.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center bg-white rounded-lg shadow-sm p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Ready to Start Your Project?
-          </h2>
-          <p className="text-lg text-gray-600 mb-6">
-            Let's work together to bring your ideas to life
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 inline-block">
+            <TypedText text={content?.title || "Kosong"} />
+          </h1>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2 mb-4 text-muted-foreground text-lg">
+            {content?.isRemote && <span>• Remote worker</span>}
+            {content?.location && <span>• Based in {content.location}</span>}
+          </div>
+          <p className="text-lg md:text-xl text-foreground/80 dark:text-foreground/70 mb-8 max-w-3xl mx-auto">
+            {content?.description || 'kosong'}
           </p>
-          <Link href="/contact">
-            <Button size="lg" className="text-lg px-8 py-3">
-              Start a Conversation
-            </Button>
-          </Link>
+          {loading && <div>Loading...</div>}
+          {error && <div className="text-red-500">Error: {error}</div>}
         </div>
+
+        {/* Latest Project Section */}
+      
       </main>
     </div>
   )
