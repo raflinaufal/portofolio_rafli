@@ -2,47 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Star,
-  GitFork,
-  RefreshCw,
-  Calendar,
-  ExternalLink,
-  Github,
-  Linkedin,
-  Instagram,
-} from "lucide-react";
+import { Star, Calendar, Github, Linkedin, Instagram } from "lucide-react";
 
-// Social Media Icons
-<div className="flex flex-row items-center gap-4 mt-4 mb-4">
-  <a
-    href="https://github.com/raflinaufal"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="GitHub"
-  >
-    <Github className="w-6 h-6 hover:text-primary transition" />
-  </a>
-  <a
-    href="https://linkedin.com/in/raflinaufal"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="LinkedIn"
-  >
-    <Linkedin className="w-6 h-6 hover:text-primary transition" />
-  </a>
-  <a
-    href="https://instagram.com/raflinaufal"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Instagram"
-  >
-    <Instagram className="w-6 h-6 hover:text-primary transition" />
-  </a>
-</div>;
 export default function DashboardPage() {
   const [githubUsername, setGithubUsername] = useState("");
   const [repos, setRepos] = useState<any[]>([]);
@@ -196,13 +159,12 @@ export default function DashboardPage() {
                     {repos.map((repo) => (
                       <Card
                         key={repo.id}
-                        className="bg-muted border border-border hover:bg-accent transition-colors cursor-pointer group"
+                        className="bg-muted border border-border group"
                       >
                         <CardContent className="p-4">
                           <div className="flex justify-between items-start mb-3">
-                            <h3 className="font-semibold text-blue-400 hover:text-blue-300 transition-colors truncate flex items-center gap-2">
+                            <h3 className="font-semibold text-blue-400 truncate flex items-center gap-2">
                               {repo.name}
-                              <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </h3>
                             <Badge
                               variant="outline"
