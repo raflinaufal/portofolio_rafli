@@ -115,19 +115,19 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
+    <div className="min-h-screen bg-background text-foreground p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Profile Card */}
           <div className="lg:col-span-1">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-card border border-border">
               <CardContent className="p-8 text-center">
                 {profile && (
                   <>
                     <Avatar className="w-32 h-32 mx-auto mb-6">
                       <AvatarImage src={profile.image} alt={profile.name} />
-                      <AvatarFallback className="text-4xl font-bold bg-gray-200 text-gray-800">
+                      <AvatarFallback className="text-4xl font-bold bg-muted text-muted-foreground">
                         {profile.name
                           ?.split(" ")
                           .map((n: string) => n[0])
@@ -135,18 +135,13 @@ export default function DashboardPage() {
                       </AvatarFallback>
                     </Avatar>
                     <h1 className="text-2xl font-bold mb-2">{profile.name}</h1>
-                    {profile.bio && (
-                      <p className="text-sm text-gray-300 mb-2">
-                        {profile.bio}
-                      </p>
-                    )}
-                    <div className="flex flex-col items-center gap-2 mt-2">
+                    <div className="flex flex-col  gap-2 mt-10">
                       {profile.github && (
                         <a
                           href={profile.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-blue-400 hover:underline"
+                          className="flex  gap-2 text-blue-400 hover:underline rounded-md px-3 py-1 bg-muted/60 dark:bg-muted/80"
                         >
                           <Github className="w-5 h-5" />
                           <span>GitHub</span>
@@ -157,7 +152,7 @@ export default function DashboardPage() {
                           href={profile.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-blue-300 hover:underline"
+                          className="flex  gap-2 text-blue-300 hover:underline rounded-md px-3 py-1 bg-muted/60 dark:bg-muted/80"
                         >
                           <Linkedin className="w-5 h-5" />
                           <span>LinkedIn</span>
@@ -168,7 +163,7 @@ export default function DashboardPage() {
                           href={profile.instagram}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-pink-400 hover:underline"
+                          className="flex  gap-2 text-pink-400 hover:underline rounded-md px-3 py-1 bg-muted/60 dark:bg-muted/80"
                         >
                           <Instagram className="w-5 h-5" />
                           <span>Instagram</span>
@@ -182,7 +177,7 @@ export default function DashboardPage() {
           </div>
           {/* Popular Repositories (dinamis dari GitHub API) */}
           <div className="lg:col-span-3 flex flex-col gap-8">
-            <Card className="bg-gray-900 border-gray-800">
+            <Card className="bg-card border border-border">
               <CardHeader>
                 <CardTitle className="text-xl font-semibold flex items-center justify-between">
                   Popular Repositories
@@ -201,7 +196,7 @@ export default function DashboardPage() {
                     {repos.map((repo) => (
                       <Card
                         key={repo.id}
-                        className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group"
+                        className="bg-muted border border-border hover:bg-accent transition-colors cursor-pointer group"
                       >
                         <CardContent className="p-4">
                           <div className="flex justify-between items-start mb-3">
@@ -211,7 +206,7 @@ export default function DashboardPage() {
                             </h3>
                             <Badge
                               variant="outline"
-                              className="text-xs border-gray-600 text-gray-300"
+                              className="text-xs border border-border text-foreground"
                             >
                               {repo.private ? "Private" : "Public"}
                             </Badge>
@@ -256,7 +251,7 @@ export default function DashboardPage() {
         </div>
         {/* Contribution Chart */}
         {githubUsername && (
-          <Card className="bg-gray-900 border-gray-800 p-0">
+          <Card className="bg-card border border-border p-0">
             <CardHeader className="pb-2">
               <CardTitle className="text-lg font-semibold">
                 GitHub Contributions
@@ -264,7 +259,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="pt-0">
               <div className="flex flex-col items-center">
-                <div className="overflow-x-auto rounded-lg border bg-gray-900 border-gray-800 w-full">
+                <div className="overflow-x-auto rounded-lg border bg-background border-border w-full">
                   <img
                     src={`https://ghchart.rshah.org/${githubUsername}`}
                     alt="GitHub Contributions Chart"
