@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const homeContent = await prisma.homeContent.findMany({ orderBy: { updatedAt: "desc" } });
+  const homeContent = await prisma.homeContent.findMany({
+    orderBy: { updatedAt: "desc" },
+  });
   return NextResponse.json({ homeContent });
 }
 
@@ -17,7 +19,10 @@ export async function POST(req: NextRequest) {
       typeof body.isRemote !== "boolean" ||
       !body.description
     ) {
-      return NextResponse.json({ error: "Field tidak lengkap atau salah" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Field tidak lengkap atau salah" },
+        { status: 400 }
+      );
     }
     const created = await prisma.homeContent.create({ data: body });
     return NextResponse.json({ homeContent: created });
@@ -31,4 +36,14 @@ export async function PATCH(req: NextRequest) {
   const { id, ...data } = body;
   const updated = await prisma.homeContent.update({ where: { id }, data });
   return NextResponse.json({ homeContent: updated });
-} 
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { id } = await req.json();
+    await prisma.homeContent.delete({ where: { id } });
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
+}

@@ -44,7 +44,6 @@ import {
 // Navigation items for regular users
 const userNavItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Home", href: "/", icon: Home },
   { label: "About", href: "/about", icon: User },
   { label: "Projects", href: "/projects", icon: Folder },
   { label: "Chat Room", href: "/chat", icon: MessageCircle },
@@ -53,10 +52,11 @@ const userNavItems = [
 
 // Navigation items for admin
 const adminNavItems = [
-  { label: "Home Content", href: "/dashboard/home", icon: FileText },
   { label: "Profile", href: "/dashboard/profile", icon: User },
   { label: "Projects", href: "/dashboard/projects", icon: Folder },
   { label: "Messages", href: "/dashboard/messages", icon: MessageCircle },
+  { label: "Service", href: "/dashboard/service", icon: Folder },
+  { label: "Home Content", href: "/dashboard/homecontent", icon: Folder },
 ];
 
 export function Sidebar() {

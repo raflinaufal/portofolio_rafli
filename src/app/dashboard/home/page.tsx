@@ -1,11 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HomeSkeleton } from "@/components/skeletons/HomeSkeleton";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger, DialogClose } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
@@ -50,7 +59,13 @@ export default function HomeContentPage() {
 
   const handleAdd = () => {
     setEditData(null);
-    setForm({ name: "", title: "", location: "", isRemote: false, description: "" });
+    setForm({
+      name: "",
+      title: "",
+      location: "",
+      isRemote: false,
+      description: "",
+    });
     setOpen(true);
   };
 
@@ -98,7 +113,11 @@ export default function HomeContentPage() {
       setOpen(false);
       fetchData();
     } catch (err) {
-      toast({ title: "Gagal menyimpan data", description: String(err), variant: "destructive" });
+      toast({
+        title: "Gagal menyimpan data",
+        description: String(err),
+        variant: "destructive",
+      });
     } finally {
       setSaving(false);
     }
@@ -108,16 +127,36 @@ export default function HomeContentPage() {
     { accessorKey: "name", header: "Name" },
     { accessorKey: "title", header: "Title" },
     { accessorKey: "location", header: "Location" },
-    { accessorKey: "isRemote", header: "Remote", cell: ({ getValue }) => getValue() ? "Yes" : "No" },
+    {
+      accessorKey: "isRemote",
+      header: "Remote",
+      cell: ({ getValue }) => (getValue() ? "Yes" : "No"),
+    },
     { accessorKey: "description", header: "Description" },
-    { accessorKey: "updatedAt", header: "Updated At", cell: ({ getValue }) => new Date(getValue() as string).toLocaleString() },
+    {
+      accessorKey: "updatedAt",
+      header: "Updated At",
+      cell: ({ getValue }) => new Date(getValue() as string).toLocaleString(),
+    },
     {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={() => handleEdit(row.original)}><Pencil className="w-4 h-4" /></Button>
-          <Button size="sm" variant="destructive" onClick={() => handleDelete(row.original)}><Trash2 className="w-4 h-4" /></Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleEdit(row.original)}
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={() => handleDelete(row.original)}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
         </div>
       ),
     },
@@ -126,31 +165,42 @@ export default function HomeContentPage() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Home Content</h1>
-      <DataTable columns={columns} data={data} onAdd={handleAdd} />
-      {loading && <div>Loading...</div>}
+      {loading ? (
+        <HomeSkeleton />
+      ) : (
+        <DataTable columns={columns} data={data} onAdd={handleAdd} />
+      )}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <DialogHeader>
-              <DialogTitle>{editData ? "Edit Home Content" : "Create Home Content"}</DialogTitle>
+              <DialogTitle>
+                {editData ? "Edit Home Content" : "Create Home Content"}
+              </DialogTitle>
             </DialogHeader>
             <div className="space-y-2">
               <Input
                 placeholder="Name"
                 value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, name: e.target.value }))
+                }
                 required
               />
               <Input
                 placeholder="Title"
                 value={form.title}
-                onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, title: e.target.value }))
+                }
                 required
               />
               <Input
                 placeholder="Location"
                 value={form.location}
-                onChange={e => setForm(f => ({ ...f, location: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, location: e.target.value }))
+                }
                 required
               />
               <div className="flex items-center gap-2">
@@ -158,21 +208,29 @@ export default function HomeContentPage() {
                   type="checkbox"
                   id="isRemote"
                   checked={form.isRemote}
-                  onChange={e => setForm(f => ({ ...f, isRemote: e.target.checked }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, isRemote: e.target.checked }))
+                  }
                 />
                 <label htmlFor="isRemote">Remote Worker</label>
               </div>
               <Textarea
                 placeholder="Description"
                 value={form.description}
-                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, description: e.target.value }))
+                }
                 required
               />
             </div>
             <DialogFooter>
-              <Button type="submit" disabled={saving}>{saving ? "Saving..." : (editData ? "Update" : "Create")}</Button>
+              <Button type="submit" disabled={saving}>
+                {saving ? "Saving..." : editData ? "Update" : "Create"}
+              </Button>
               <DialogClose asChild>
-                <Button type="button" variant="outline">Cancel</Button>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
               </DialogClose>
             </DialogFooter>
           </form>
@@ -180,4 +238,4 @@ export default function HomeContentPage() {
       </Dialog>
     </div>
   );
-} 
+}

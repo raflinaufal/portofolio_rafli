@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ProjectsSkeleton } from "@/components/skeletons/ProjectsSkeleton";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
@@ -107,7 +108,8 @@ const mockProjects: Project[] = [
   {
     id: "1",
     title: "E-commerce Platform",
-    description: "A full-stack e-commerce platform built with Next.js, TypeScript, and Prisma. Features include user authentication, product management, shopping cart, and payment integration.",
+    description:
+      "A full-stack e-commerce platform built with Next.js, TypeScript, and Prisma. Features include user authentication, product management, shopping cart, and payment integration.",
     technologies: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Stripe"],
     status: "published",
     createdAt: "2024-01-15",
@@ -116,7 +118,8 @@ const mockProjects: Project[] = [
   {
     id: "2",
     title: "Task Management App",
-    description: "A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
+    description:
+      "A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
     technologies: ["React", "Node.js", "Socket.io", "MongoDB"],
     status: "draft",
     createdAt: "2024-01-10",
@@ -125,7 +128,8 @@ const mockProjects: Project[] = [
   {
     id: "3",
     title: "Portfolio Website",
-    description: "A modern portfolio website with dynamic content management, dark mode, and responsive design.",
+    description:
+      "A modern portfolio website with dynamic content management, dark mode, and responsive design.",
     technologies: ["Next.js", "Tailwind CSS", "Framer Motion"],
     status: "published",
     createdAt: "2024-01-05",
@@ -134,7 +138,8 @@ const mockProjects: Project[] = [
   {
     id: "4",
     title: "Chat Application",
-    description: "Real-time chat application with user authentication, message history, and file sharing capabilities.",
+    description:
+      "Real-time chat application with user authentication, message history, and file sharing capabilities.",
     technologies: ["React", "Firebase", "Socket.io", "Tailwind CSS"],
     status: "archived",
     createdAt: "2023-12-20",
@@ -160,11 +165,7 @@ export default function ProjectsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-lg">Loading projects...</div>
-      </div>
-    );
+    return <ProjectsSkeleton />;
   }
 
   return (
@@ -183,19 +184,19 @@ export default function ProjectsPage() {
         </div>
         <div className="p-4 bg-card rounded-lg border">
           <div className="text-2xl font-bold">
-            {projects.filter(p => p.status === "published").length}
+            {projects.filter((p) => p.status === "published").length}
           </div>
           <div className="text-sm text-muted-foreground">Published</div>
         </div>
         <div className="p-4 bg-card rounded-lg border">
           <div className="text-2xl font-bold">
-            {projects.filter(p => p.status === "draft").length}
+            {projects.filter((p) => p.status === "draft").length}
           </div>
           <div className="text-sm text-muted-foreground">Drafts</div>
         </div>
         <div className="p-4 bg-card rounded-lg border">
           <div className="text-2xl font-bold">
-            {projects.filter(p => p.status === "archived").length}
+            {projects.filter((p) => p.status === "archived").length}
           </div>
           <div className="text-sm text-muted-foreground">Archived</div>
         </div>
@@ -209,4 +210,4 @@ export default function ProjectsPage() {
       />
     </div>
   );
-} 
+}

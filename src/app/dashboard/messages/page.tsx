@@ -1,21 +1,15 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Eye, Mail, MailOpen } from "lucide-react";
-
-interface Message {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  status: "unread" | "read" | "replied";
-  createdAt: string;
-}
+import { Trash2, Eye, Mail, MailOpen } from "lucide-react";
+import { MessagesSkeleton } from "@/components/skeletons/MessagesSkeleton";
+import { useToast } from "@/hooks/use-toast";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { fetchMessages } from "@/lib/slices/messagesSlice";
+import type { Message } from "@/types/message";
 
 const columns: ColumnDef<Message>[] = [
   {
@@ -34,9 +28,7 @@ const columns: ColumnDef<Message>[] = [
     accessorKey: "message",
     header: "Message",
     cell: ({ row }) => (
-      <div className="max-w-[300px] truncate">
-        {row.getValue("message")}
-      </div>
+      <div className="max-w-[300px] truncate">{row.getValue("message")}</div>
     ),
   },
   {
@@ -89,83 +81,29 @@ const columns: ColumnDef<Message>[] = [
   },
 ];
 
-// Mock data
-const mockMessages: Message[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    subject: "Project Collaboration",
-    message: "Hi! I'm interested in collaborating on a new project. I've seen your portfolio and I think we could work well together. Would you be available for a call next week?",
-    status: "unread",
-    createdAt: "2024-01-20T10:30:00Z",
-  },
-  {
-    id: "2",
-    name: "Sarah Wilson",
-    email: "sarah@company.com",
-    subject: "Job Opportunity",
-    message: "We're looking for a talented developer to join our team. Your portfolio caught our attention. Are you currently open to new opportunities?",
-    status: "read",
-    createdAt: "2024-01-19T14:15:00Z",
-  },
-  {
-    id: "3",
-    name: "Mike Johnson",
-    email: "mike@startup.com",
-    subject: "Freelance Work",
-    message: "We need help with our website redesign. Your work looks great! Are you available for freelance projects?",
-    status: "replied",
-    createdAt: "2024-01-18T09:45:00Z",
-  },
-  {
-    id: "4",
-    name: "Emily Brown",
-    email: "emily@agency.com",
-    subject: "Partnership Proposal",
-    message: "We'd like to discuss a potential partnership. Your skills align perfectly with our needs. Can we schedule a meeting?",
-    status: "unread",
-    createdAt: "2024-01-17T16:20:00Z",
-  },
-  {
-    id: "5",
-    name: "David Lee",
-    email: "david@tech.com",
-    subject: "Technical Consultation",
-    message: "We're building a new platform and need technical guidance. Your experience with Next.js would be valuable.",
-    status: "read",
-    createdAt: "2024-01-16T11:10:00Z",
-  },
-];
-
 export default function MessagesPage() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
+  const { data: messages, loading } = useAppSelector((state) => state.messages);
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setMessages(mockMessages);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    dispatch(fetchMessages());
+  }, [dispatch]);
 
   const handleAddMessage = () => {
-    // TODO: Implement compose message modal
-    console.log("Compose new message");
+    toast({
+      title: "Not implemented",
+      description: "Compose message modal coming soon.",
+    });
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-lg">Loading messages...</div>
-      </div>
-    );
+    return <MessagesSkeleton />;
   }
 
-  const unreadCount = messages.filter(m => m.status === "unread").length;
-  const readCount = messages.filter(m => m.status === "read").length;
-  const repliedCount = messages.filter(m => m.status === "replied").length;
+  const unreadCount = messages.filter((m) => m.status === "unread").length;
+  const readCount = messages.filter((m) => m.status === "read").length;
+  const repliedCount = messages.filter((m) => m.status === "replied").length;
 
   return (
     <div className="space-y-6">
@@ -182,7 +120,9 @@ export default function MessagesPage() {
             <MailOpen className="h-5 w-5 text-muted-foreground" />
             <div>
               <div className="text-2xl font-bold">{messages.length}</div>
-              <div className="text-sm text-muted-foreground">Total Messages</div>
+              <div className="text-sm text-muted-foreground">
+                Total Messages
+              </div>
             </div>
           </div>
         </div>
@@ -223,4 +163,4 @@ export default function MessagesPage() {
       />
     </div>
   );
-} 
+}
