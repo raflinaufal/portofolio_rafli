@@ -47,6 +47,9 @@ model About {
   location String?
   image    String?
   githubUsername String? // username GitHub admin
+  github   String? // link profil GitHub
+  instagram String? // link profil Instagram
+  linkedin String? // link profil LinkedIn
 }
 
 model ContactMessage {

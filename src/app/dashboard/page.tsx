@@ -50,6 +50,9 @@ export default function DashboardPage() {
     name?: string;
     image?: string;
     bio?: string;
+    github?: string;
+    instagram?: string;
+    linkedin?: string;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +65,14 @@ export default function DashboardPage() {
       .then((data) => {
         const username = data?.githubUsername || "raflinaufal";
         setGithubUsername(username);
-        setProfile({ name: data?.name, image: data?.image, bio: data?.bio });
+        setProfile({
+          name: data?.name,
+          image: data?.image,
+          bio: data?.bio,
+          github: data?.github,
+          instagram: data?.instagram,
+          linkedin: data?.linkedin,
+        });
         // Fetch repos
         fetch(
           `https://api.github.com/users/${username}/repos?sort=updated&per_page=6`
@@ -107,7 +117,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-white p-6">
       <div className="max-w-7xl mx-auto space-y-8">
-        <h1 className="text-3xl font-bold mb-8">GitHub Dashboard</h1>
+        <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Profile Card */}
           <div className="lg:col-span-1">
@@ -126,10 +136,45 @@ export default function DashboardPage() {
                     </Avatar>
                     <h1 className="text-2xl font-bold mb-2">{profile.name}</h1>
                     {profile.bio && (
-                      <p className="text-sm text-gray-300 mb-4">
+                      <p className="text-sm text-gray-300 mb-2">
                         {profile.bio}
                       </p>
                     )}
+                    <div className="flex flex-col items-center gap-2 mt-2">
+                      {profile.github && (
+                        <a
+                          href={profile.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-blue-400 hover:underline"
+                        >
+                          <Github className="w-5 h-5" />
+                          <span>GitHub</span>
+                        </a>
+                      )}
+                      {profile.linkedin && (
+                        <a
+                          href={profile.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-blue-300 hover:underline"
+                        >
+                          <Linkedin className="w-5 h-5" />
+                          <span>LinkedIn</span>
+                        </a>
+                      )}
+                      {profile.instagram && (
+                        <a
+                          href={profile.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-pink-400 hover:underline"
+                        >
+                          <Instagram className="w-5 h-5" />
+                          <span>Instagram</span>
+                        </a>
+                      )}
+                    </div>
                   </>
                 )}
               </CardContent>
@@ -207,43 +252,30 @@ export default function DashboardPage() {
                 )}
               </CardContent>
             </Card>
-            {/* Contribution Chart */}
-            {githubUsername && (
-              <Card className="bg-gray-900 border-gray-800 p-0">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg font-semibold">
-                    GitHub Contributions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="flex flex-col items-center gap-2">
-                    <a
-                      href={`https://github.com/${githubUsername}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary underline mb-2"
-                    >
-                      @{githubUsername}
-                    </a>
-                    <div className="overflow-x-auto rounded-lg border bg-background p-4 w-full flex justify-center">
-                      <img
-                        src={`https://ghchart.rshah.org/${githubUsername}`}
-                        alt="GitHub Contributions Chart"
-                        className="w-full max-w-2xl min-w-[350px]"
-                        loading="lazy"
-                        style={{
-                          background: "#161b22",
-                          borderRadius: "8px",
-                          padding: "8px",
-                        }}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
         </div>
+        {/* Contribution Chart */}
+        {githubUsername && (
+          <Card className="bg-gray-900 border-gray-800 p-0">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg font-semibold">
+                GitHub Contributions
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="flex flex-col items-center">
+                <div className="overflow-x-auto rounded-lg border bg-gray-900 border-gray-800 w-full">
+                  <img
+                    src={`https://ghchart.rshah.org/${githubUsername}`}
+                    alt="GitHub Contributions Chart"
+                    className="w-full"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

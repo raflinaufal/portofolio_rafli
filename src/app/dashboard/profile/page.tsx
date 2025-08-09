@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -17,6 +23,9 @@ const PROFILE_FIELDS = [
   { key: "location", label: "Location" },
   { key: "image", label: "Image URL" },
   { key: "githubUsername", label: "GitHub Username" },
+  { key: "github", label: "GitHub Link" },
+  { key: "instagram", label: "Instagram Link" },
+  { key: "linkedin", label: "LinkedIn Link" },
 ];
 
 export default function ProfileDashboardPage() {
@@ -51,15 +60,23 @@ export default function ProfileDashboardPage() {
   }
 
   if (!about) {
-    return <div className="flex items-center justify-center h-64">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-64">Loading...</div>
+    );
   }
 
   // Data untuk datatable
-  const data = PROFILE_FIELDS.map(field => ({
+  const data = PROFILE_FIELDS.map((field) => ({
     field: field.label,
-    value: field.key === "image" && about[field.key]
-      ? <Avatar className="w-10 h-10"><AvatarImage src={about[field.key]} alt="Profile" /><AvatarFallback>{about.name?.[0] || "U"}</AvatarFallback></Avatar>
-      : about[field.key] || <span className="text-muted-foreground">-</span>,
+    value:
+      field.key === "image" && about[field.key] ? (
+        <Avatar className="w-10 h-10">
+          <AvatarImage src={about[field.key]} alt="Profile" />
+          <AvatarFallback>{about.name?.[0] || "U"}</AvatarFallback>
+        </Avatar>
+      ) : (
+        about[field.key] || <span className="text-muted-foreground">-</span>
+      ),
     key: field.key,
     rawValue: about[field.key] || "",
   }));
@@ -69,21 +86,29 @@ export default function ProfileDashboardPage() {
     {
       accessorKey: "field",
       header: "Field",
-      cell: ({ row }) => <span className="font-medium">{row.original.field}</span>,
+      cell: ({ row }) => (
+        <span className="font-medium">{row.original.field}</span>
+      ),
     },
     {
       accessorKey: "value",
       header: "Value",
-      cell: ({ row }) => <div className="break-words max-w-xs">{row.original.value}</div>,
+      cell: ({ row }) => (
+        <div className="break-words max-w-xs">{row.original.value}</div>
+      ),
     },
     {
       id: "actions",
       header: "Action",
       cell: ({ row }) => (
-        <Button size="sm" variant="outline" onClick={() => {
-          setEditField(row.original.key);
-          setEditValue(row.original.rawValue);
-        }}>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            setEditField(row.original.key);
+            setEditValue(row.original.rawValue);
+          }}
+        >
           Edit
         </Button>
       ),
@@ -98,15 +123,22 @@ export default function ProfileDashboardPage() {
       </Card>
 
       {/* Modal Edit */}
-      <Dialog open={!!editField} onOpenChange={open => { if (!open) setEditField(null); }}>
+      <Dialog
+        open={!!editField}
+        onOpenChange={(open) => {
+          if (!open) setEditField(null);
+        }}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit {PROFILE_FIELDS.find(f => f.key === editField)?.label}</DialogTitle>
+            <DialogTitle>
+              Edit {PROFILE_FIELDS.find((f) => f.key === editField)?.label}
+            </DialogTitle>
           </DialogHeader>
           <Input
             value={editValue}
-            onChange={e => setEditValue(e.target.value)}
-            placeholder={PROFILE_FIELDS.find(f => f.key === editField)?.label}
+            onChange={(e) => setEditValue(e.target.value)}
+            placeholder={PROFILE_FIELDS.find((f) => f.key === editField)?.label}
             autoFocus
           />
           <DialogFooter>
@@ -121,4 +153,4 @@ export default function ProfileDashboardPage() {
       </Dialog>
     </div>
   );
-} 
+}
