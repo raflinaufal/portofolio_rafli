@@ -43,38 +43,43 @@ import {
 
 // Navigation items for regular users
 const userNavItems = [
-
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Home", href: "/", icon: Home },
   { label: "About", href: "/about", icon: User },
   { label: "Projects", href: "/projects", icon: Folder },
   { label: "Chat Room", href: "/chat", icon: MessageCircle },
   { label: "Contact", href: "/contact", icon: Mail },
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard }
 ];
 
 // Navigation items for admin
 const adminNavItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Home Content", href: "/dashboard/home", icon: FileText },
   { label: "Profile", href: "/dashboard/profile", icon: User },
   { label: "Projects", href: "/dashboard/projects", icon: Folder },
   { label: "Messages", href: "/dashboard/messages", icon: MessageCircle },
-  { label: "Users", href: "/dashboard/users", icon: Users },
-  { label: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export function Sidebar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const { isCollapsed, isMobileOpen, setActiveItem, toggleCollapsed, setMobileOpen } = useSidebar();
+  const {
+    isCollapsed,
+    isMobileOpen,
+    setActiveItem,
+    toggleCollapsed,
+    setMobileOpen,
+  } = useSidebar();
   const { isDarkMode } = useSelector((state: RootState) => state.theme);
   const dispatch = useDispatch();
-  
+
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if (session?.user && 'role' in session.user && session.user.role === "ADMIN") {
+    if (
+      session?.user &&
+      "role" in session.user &&
+      session.user.role === "ADMIN"
+    ) {
       setIsAdmin(true);
     }
   }, [session]);
@@ -93,10 +98,12 @@ export function Sidebar() {
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
-        <div className={cn(
-          "flex items-center gap-2 transition-all duration-300",
-          isCollapsed ? "justify-center" : "justify-start"
-        )}>
+        <div
+          className={cn(
+            "flex items-center gap-2 transition-all duration-300",
+            isCollapsed ? "justify-center" : "justify-start"
+          )}
+        >
           <Avatar className="w-8 h-8">
             <AvatarImage src={userImage} alt={userName} />
             <AvatarFallback>{userName.charAt(0)}</AvatarFallback>
@@ -105,7 +112,7 @@ export function Sidebar() {
             <span className="font-semibold text-lg">{userName}</span>
           )}
         </div>
-        
+
         {/* Desktop collapse button */}
         <Button
           variant="ghost"
@@ -113,11 +120,13 @@ export function Sidebar() {
           onClick={toggleCollapsed}
           className="hidden lg:flex"
         >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {isCollapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </Button>
       </div>
-
-     
 
       {/* Navigation */}
       <ScrollArea className="flex-1 px-4 py-2">
@@ -149,12 +158,13 @@ export function Sidebar() {
             variant="ghost"
             size="sm"
             onClick={() => dispatch(toggleTheme())}
-            className={cn(
-              "gap-2",
-              isCollapsed && "justify-center px-2"
-            )}
+            className={cn("gap-2", isCollapsed && "justify-center px-2")}
           >
-            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {isDarkMode ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
             {!isCollapsed && <span>Theme</span>}
           </Button>
 
@@ -171,7 +181,7 @@ export function Sidebar() {
             </Button>
           )}
         </div>
-        
+
         {!isCollapsed && (
           <div className="mt-4 text-xs text-muted-foreground text-center">
             © 2025 with ❤️ by {session?.user?.name || "Portfolio"}
@@ -184,19 +194,24 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className={cn(
-        "hidden lg:flex flex-col bg-card border-r transition-all duration-300",
-        isCollapsed ? "w-16" : "w-64"
-      )}>
+      <aside
+        className={cn(
+          "hidden lg:flex flex-col bg-card border-r transition-all duration-300",
+          isCollapsed ? "w-16" : "w-64"
+        )}
+      >
         <SidebarContent />
       </aside>
 
       {/* Mobile Sidebar */}
-      <Sheet open={isMobileOpen} onOpenChange={(open: boolean) => setMobileOpen(open)}>
+      <Sheet
+        open={isMobileOpen}
+        onOpenChange={(open: boolean) => setMobileOpen(open)}
+      >
         <SheetContent side="left" className="w-64 p-0">
           <SidebarContent />
         </SheetContent>
       </Sheet>
     </>
   );
-} 
+}
