@@ -13,11 +13,7 @@ import {
 import { DataTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { ProfileSkeleton } from "@/components/skeletons/ProfileSkeleton";
-import { useToast } from "@/hooks/use-toast";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { fetchProfile } from "@/lib/slices/profileSlice";
-import type { Profile } from "@/types/profile";
+import { useSession } from "next-auth/react";
 
 const PROFILE_FIELDS = [
   { key: "name", label: "Name" },
@@ -33,72 +29,57 @@ const PROFILE_FIELDS = [
 ];
 
 export default function ProfileDashboardPage() {
-  const dispatch = useAppDispatch();
-  const { data: about, loading } = useAppSelector((state) => state.profile);
+  const { data: session } = useSession();
+  const [about, setAbout] = useState<any>(null);
   const [editField, setEditField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>("");
-  const [saving, setSaving] = useState(false);
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchProfile());
-  }, [dispatch]);
+    fetchAbout();
+  }, []);
+
+  async function fetchAbout() {
+    const res = await fetch("/api/dashboard/about");
+    const data = await res.json();
+    setAbout(data);
+  }
 
   async function handleEditSave() {
-    if (!editField || !about) return;
-    setSaving(true);
-    try {
-      const res = await fetch("/api/dashboard/about", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...about, [editField]: editValue }),
-      });
-      if (!res.ok) throw new Error("Failed to update profile");
-      toast({
-        title: "Profile updated",
-        description: `Field '${
-          PROFILE_FIELDS.find((f) => f.key === editField)?.label
-        }' updated successfully.`,
-      });
-      setEditField(null);
-      setEditValue("");
-      dispatch(fetchProfile());
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message });
-    } finally {
-      setSaving(false);
-    }
+    if (!editField) return;
+    setLoading(true);
+    await fetch("/api/dashboard/about", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...about, [editField]: editValue }),
+    });
+    setLoading(false);
+    setEditField(null);
+    setEditValue("");
+    fetchAbout();
   }
 
-  if (loading) {
-    return <ProfileSkeleton />;
-  }
   if (!about) {
     return (
-      <div className="text-center text-muted-foreground">
-        No profile data found.
-      </div>
+      <div className="flex items-center justify-center h-64">Loading...</div>
     );
   }
 
   // Data untuk datatable
-  const data = PROFILE_FIELDS.map((field) => {
-    const value = (about as Record<string, any>)[field.key];
-    return {
-      field: field.label,
-      value:
-        field.key === "image" && value ? (
-          <Avatar className="w-10 h-10">
-            <AvatarImage src={value} alt="Profile" />
-            <AvatarFallback>{about.name?.[0] || "U"}</AvatarFallback>
-          </Avatar>
-        ) : (
-          value || <span className="text-muted-foreground">-</span>
-        ),
-      key: field.key,
-      rawValue: value || "",
-    };
-  });
+  const data = PROFILE_FIELDS.map((field) => ({
+    field: field.label,
+    value:
+      field.key === "image" && about[field.key] ? (
+        <Avatar className="w-10 h-10">
+          <AvatarImage src={about[field.key]} alt="Profile" />
+          <AvatarFallback>{about.name?.[0] || "U"}</AvatarFallback>
+        </Avatar>
+      ) : (
+        about[field.key] || <span className="text-muted-foreground">-</span>
+      ),
+    key: field.key,
+    rawValue: about[field.key] || "",
+  }));
 
   // Kolom DataTable
   const columns: ColumnDef<any>[] = [
@@ -161,8 +142,8 @@ export default function ProfileDashboardPage() {
             autoFocus
           />
           <DialogFooter>
-            <Button onClick={handleEditSave} disabled={saving}>
-              {saving ? "Saving..." : "Save"}
+            <Button onClick={handleEditSave} disabled={loading}>
+              {loading ? "Saving..." : "Save"}
             </Button>
             <Button variant="outline" onClick={() => setEditField(null)}>
               Cancel

@@ -90,13 +90,6 @@ export default function MessagesPage() {
     dispatch(fetchMessages());
   }, [dispatch]);
 
-  const handleAddMessage = () => {
-    toast({
-      title: "Not implemented",
-      description: "Compose message modal coming soon.",
-    });
-  };
-
   if (loading) {
     return <MessagesSkeleton />;
   }
@@ -155,12 +148,7 @@ export default function MessagesPage() {
         </div>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={messages}
-        searchKey="name"
-        onAdd={handleAddMessage}
-      />
+      <DataTable columns={columns} data={messages} searchKey="name" />
     </div>
   );
 }
