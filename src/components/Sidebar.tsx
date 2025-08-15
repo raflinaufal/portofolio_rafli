@@ -57,6 +57,8 @@ const adminNavItems = [
   { label: "Messages", href: "/dashboard/messages", icon: MessageCircle },
   { label: "Service", href: "/dashboard/service", icon: Folder },
   { label: "Home Content", href: "/dashboard/homecontent", icon: Folder },
+  { label: "Skills", href: "/dashboard/skills", icon: BarChart3 },
+  { label: "Experience", href: "/dashboard/experience", icon: FileText },
 ];
 
 export function Sidebar() {

@@ -53,6 +53,22 @@ model About {
   linkedin String? // link profil LinkedIn
 }
 
+model Skill {
+  id        Int    @id @default(autoincrement())
+  name      String
+  category  String
+}
+
+model Experience {
+  id          Int      @id @default(autoincrement())
+  position    String
+  company     String
+  description String
+  startDate   DateTime
+  endDate     DateTime?
+  isCurrent   Boolean @default(false)
+}
+
 model ContactMessage {
   id        Int      @id @default(autoincrement())
   name      String
